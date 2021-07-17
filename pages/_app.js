@@ -11,6 +11,10 @@ const GlobalStyle = createGlobalStyle`
   body {
     background: #d9e6f6;
     font-family: sans-serif;
+    background: url('https://www.techcult.com.br/wp-content/uploads/2016/01/homem-aranha-3.jpg');
+    background-position: center;
+    background-size: cover;
+    background-position-y: -158px;
   }
 
   #__next{

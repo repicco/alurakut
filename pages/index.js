@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import {ProfileRelationsBoxWrapper} from '../src/components/ProfileRelations'
@@ -37,11 +37,17 @@ function Profile({title, arr, tag}) {
                     <span>{item}</span>
                   </a>
                 </li>
-              :
+              : tag === 'community' ?
                 <li key={item.id}>
                   <a href={item.url} target="blank" >
                     <img src={item.img} />
                     <span>{item.title}</span>
+                  </a>
+                </li>
+              : <li key={item.id}>
+                  <a href={item.url} target="blank" >
+                    <img src={item.avatar_url} />
+                    <span>{item.login}</span>
                   </a>
                 </li>
             }
@@ -94,6 +100,15 @@ export default function Home() {
     },
   ])
   const favoriteUsers = ['juunegreiros', 'omariosouto', 'rafaballerini', 'marcobrunodev', 'felipefialho', 'peas', 'guilhermesilveira']
+  const [followers, setFollowers] = useState([])
+
+  useEffect(() => {
+    fetch('https://api.github.com/users/peas/followers')
+    .then((response) => response.json())
+    .then((response) => {
+      setFollowers(response)
+    })
+  }, [])
 
   return (
     <>
@@ -120,6 +135,7 @@ export default function Home() {
                 id: new Date().toISOString(),
                 title: dataForm.get('title'),
                 img: dataForm.get('image'),
+                url: dataForm.get('url'),
               }
               setCommunities([...communities, community])
             }}>
@@ -132,8 +148,14 @@ export default function Home() {
               <div>
                 <input
                   placeholder="Coloque a URL da sua comunidade?"
-                  name="image"
+                  name="url"
                   aria-label="Coloque a URL da sua comunidade?" />
+              </div>
+              <div>
+                <input
+                  placeholder="URL da imagem da sua comunidade?"
+                  name="image"
+                  aria-label="URL da imagem da sua comunidade?" />
               </div>
               <button>
                 Criar comunidade
@@ -143,7 +165,10 @@ export default function Home() {
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
           <ProfileRelationsBoxWrapper>
-            <Profile title='Comunidades' arr={communities} tag='comunidades' />
+            <Profile title='Seguidores' arr={followers} tag='follower' />
+          </ProfileRelationsBoxWrapper>
+          <ProfileRelationsBoxWrapper>
+            <Profile title='Comunidades' arr={communities} tag='community' />
           </ProfileRelationsBoxWrapper>
           <ProfileRelationsBoxWrapper>
             <Profile title='Pessoas das comunidades' arr={favoriteUsers} tag='user' />
