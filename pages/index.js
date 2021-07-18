@@ -137,10 +137,10 @@ export default function Home({ login }) {
   )
 }
 
-/* export async function getServerSideProps(context) {
-  const token = nookies.get(context).REKUT_TOKEN
-  let login = ''
-  if(token === 'notFound'){
+export async function getServerSideProps(context) {
+  /* const token = nookies.get(context).REKUT_TOKEN */
+  let login = 'repicco'
+/*   if(token === 'notFound'){
     return {
       redirect: {
         destination: '/login',
@@ -150,10 +150,10 @@ export default function Home({ login }) {
   } else {
     const decodeToken = await jwt.decode(token)
     login = decodeToken.login
-  }
+   */}
   return {
     props: {
       login
     },
   }
-} */
+}
