@@ -148,7 +148,8 @@ export async function getServerSideProps(context) {
       }
     }
   } else {
-    login = await jwt.decode(token).login
+    const decodeToken = await jwt.decode(token)
+    login = decodeToken.login
   }
   return {
     props: {
