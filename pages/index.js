@@ -9,6 +9,16 @@ import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
 import ProfileSideBar from '../src/components/ProfileSideBar'
 import Profile from '../src/components/Profile'
 
+export async function getServerSideProps(context) {
+  const token = nookies.get(context).REKUT_TOKEN
+
+  const props = token === 'notFound' ? { login: ''} : { login: jwt.decode(token).login }
+
+  const redirect = { destination: '/login', permanent: false }
+
+  return token === 'notFound' ? { redirect, props } : { props }
+}
+
 export default function Home(props) {
   const githubUser = props?.login
   const [communities, setCommunities] = useState([])
@@ -137,13 +147,5 @@ export default function Home(props) {
   )
 }
 
-export async function getServerSideProps(context) {
-    const token = nookies.get(context).REKUT_TOKEN
 
-    const props = token === 'notFound' ? { login: ''} : { login: jwt.decode(token).login }
-
-    const redirect = { destination: '/login', permanent: false }
-
-    return token === 'notFound' ? { redirect, props } : { props }
-  }
   
