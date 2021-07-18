@@ -1,117 +1,68 @@
 import { useState, useEffect } from 'react'
 import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
-import {ProfileRelationsBoxWrapper} from '../src/components/ProfileRelations'
-import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons'
+import { AlurakutMenu, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons'
 
-function ProfileSideBar({gitUser}) {
-  return(
-    <Box as='aside'>
-      <img src={`https://github.com/${gitUser}.png`} style={{ borderRadius: '8px' }} />
-      <hr />
-      <a className="boxLink" href={`https://github.com/${gitUser}`} target="blank">
-        @{gitUser}
-      </a>
-      <hr/>
-      <AlurakutProfileSidebarMenuDefault/>
-    </Box>
-  )
-}
-
-function Profile({title, arr, tag}) {
-  return (
-  <>
-    <h2 className="smallTitle">
-      {title} ({arr.length})
-    </h2>
-    
-    <ul>
-      {
-        arr.map( (item, index) => 
-          {
-            if(index < 6){
-              return tag === 'user' ?
-                <li key={item}>
-                  <a href={`https://github.com/${item}`} target="blank" >
-                    <img src={`https://github.com/${item}.png`} />
-                    <span>{item}</span>
-                  </a>
-                </li>
-              : tag === 'community' ?
-                <li key={item.id}>
-                  <a href={item.url} target="blank" >
-                    <img src={item.img} />
-                    <span>{item.title}</span>
-                  </a>
-                </li>
-              : <li key={item.id}>
-                  <a href={item.url} target="blank" >
-                    <img src={item.avatar_url} />
-                    <span>{item.login}</span>
-                  </a>
-                </li>
-            }
-          }       
-        )
-      }
-    </ul>
-  </>
-  )
-}
+import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
+import ProfileSideBar from '../src/components/ProfileSideBar'
+import Profile from '../src/components/Profile'
 
 export default function Home() {
   const githubUser = 'repicco'
-  const [communities, setCommunities] = useState([
-    {
-    id: '125463',
-    title: 'Eu odeio acordar cedo',
-    img: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
-    url: 'https://www.orkut.br.com/MainCommunity?cmm=10000'
-    },
-    {
-      id: '2255463',
-      title: 'Mulher não se pega se conquista',
-      img: 'https://img10.orkut.br.com/community/2e54711655562955dab78403845600cc.jpg',
-      url: 'https://www.orkut.br.com/MainCommunity?cmm=82906'
-    },
-    {
-      id: '4525463',
-      title: 'Novo MSN',
-      img: 'https://img10.orkut.br.com/community/eb494c868dc3962a5152b58037b5aca4.jpeg',
-      url: 'https://www.orkut.br.com/MainCommunity?cmm=14540'
-    },
-    {
-      id: '25205463',
-      title: 'Facebook me estressou',
-      img: 'https://img10.orkut.br.com/community/473b293d68dd8a9032d5489fd706c781.jpg',
-      url: 'https://www.orkut.br.com/MainCommunity?cmm=10391'
-    },
-    {
-      id: '66352463',
-      title: 'Eu odeio cagar fora de casa',
-      img: 'https://img10.orkut.br.com/community/d2b004325da1d5a16af6c5303446f3d5.jpg',
-      url: 'https://www.orkut.br.com/MainCommunity?cmm=10011'
-    },
-    {
-      id: '52132463',
-      title: 'Queremos o Buddy Poke no orkut',
-      img: 'https://img10.orkut.br.com/community/2e46a72e57c4d1503622fbe12c2a78ef.png',
-      url: 'https://www.orkut.br.com/MainCommunity?cmm=13359'
-    },
-  ])
+  const [communities, setCommunities] = useState([])
   const favoriteUsers = ['juunegreiros', 'omariosouto', 'rafaballerini', 'marcobrunodev', 'felipefialho', 'peas', 'guilhermesilveira']
   const [followers, setFollowers] = useState([])
 
-  useEffect(() => {
-    fetch('https://api.github.com/users/peas/followers')
-    .then((response) => response.json())
-    .then((response) => {
-      setFollowers(response)
+  const connectApi = {
+    githubFollowersGet: () => fetch('https://api.github.com/users/peas/followers')
+    .then(async (response) => {
+      const newResponse = await response.json()
+      setFollowers(newResponse)
+    }),
+
+    datoCommunityPost: () => fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization':'204c3ef969b2ce51bcb15ae61c3911',
+        'Content-Type':'application/json',
+        'Accept':'application/json',
+      },
+      body: JSON.stringify({ "query" : `query {
+          allCommunities {
+            id
+            title
+            imageUrl
+            url
+            creatorslug
+            _status
+            _firstPublishedAt
+          }
+          _allCommunitiesMeta {
+            count
+          }
+        }`})
     })
+    .then(async (response) => {
+      const newResponse = await response.json()
+      setCommunities(newResponse.data.allCommunities)
+    }),
+
+    datoPushCommunityPost: (payload) => fetch('api/community', {method: 'POST', headers: {'Content-Type':'application/json',}, body: JSON.stringify(payload)})
+    .then(async (response) => {
+      const newResponse = await response.json()
+      console.log(newResponse.createRegister)
+      setCommunities([...communities, newResponse.createRegister])
+    }),
+  }
+
+  useEffect(() => {
+    connectApi.githubFollowersGet()
+    connectApi.datoCommunityPost()
   }, [])
 
   return (
     <>
+      <div className="bg_body"></div>
       <AlurakutMenu githubUser={githubUser}/>
       <MainGrid>
         <div className="profileArea" style={{ gridArea: 'profileArea' }}>
@@ -131,13 +82,15 @@ export default function Home() {
             <form onSubmit={function handleCreateComunity(ev) {
               ev.preventDefault()
               const dataForm = new FormData(ev.target)
-              const community = {
-                id: new Date().toISOString(),
+              const payload = {
+                /* id: new Date().toISOString(), */
                 title: dataForm.get('title'),
-                img: dataForm.get('image'),
+                imageUrl: dataForm.get('image'),
                 url: dataForm.get('url'),
+                creatorslug: githubUser,
               }
-              setCommunities([...communities, community])
+
+              connectApi.datoPushCommunityPost(payload)
             }}>
               <div>
                 <input
@@ -165,10 +118,10 @@ export default function Home() {
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
           <ProfileRelationsBoxWrapper>
-            <Profile title='Seguidores' arr={followers} tag='follower' />
+            <Profile title='Comunidades' arr={communities} tag='community' />
           </ProfileRelationsBoxWrapper>
           <ProfileRelationsBoxWrapper>
-            <Profile title='Comunidades' arr={communities} tag='community' />
+            <Profile title='Seguidores' arr={followers} tag='follower' />
           </ProfileRelationsBoxWrapper>
           <ProfileRelationsBoxWrapper>
             <Profile title='Pessoas das comunidades' arr={favoriteUsers} tag='user' />

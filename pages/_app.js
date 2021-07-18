@@ -9,12 +9,22 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: #d9e6f6;
+    background: #000;
     font-family: sans-serif;
+  }
+
+  .bg_body {
     background: url('https://www.techcult.com.br/wp-content/uploads/2016/01/homem-aranha-3.jpg');
     background-position: center;
     background-size: cover;
     background-position-y: -158px;
+    position: fixed;
+    opacity: 0.4;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   #__next{
