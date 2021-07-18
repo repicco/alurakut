@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import nookies from 'nookies'
+import jwt from 'jsonwebtoken'
 import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import { AlurakutMenu, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons'
@@ -7,8 +9,8 @@ import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
 import ProfileSideBar from '../src/components/ProfileSideBar'
 import Profile from '../src/components/Profile'
 
-export default function Home() {
-  const githubUser = 'repicco'
+export default function Home({ login }) {
+  const githubUser = login
   const [communities, setCommunities] = useState([])
   const favoriteUsers = ['juunegreiros', 'omariosouto', 'rafaballerini', 'marcobrunodev', 'felipefialho', 'peas', 'guilhermesilveira']
   const [followers, setFollowers] = useState([])
@@ -47,10 +49,13 @@ export default function Home() {
       setCommunities(newResponse.data.allCommunities)
     }),
 
-    datoPushCommunityPost: (payload) => fetch('api/community', {method: 'POST', headers: {'Content-Type':'application/json',}, body: JSON.stringify(payload)})
+    datoPushCommunityPost: (payload) => fetch('api/community', {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json',
+    }, body: JSON.stringify(payload)})
     .then(async (response) => {
       const newResponse = await response.json()
-      console.log(newResponse.createRegister)
       setCommunities([...communities, newResponse.createRegister])
     }),
   }
@@ -130,4 +135,22 @@ export default function Home() {
       </MainGrid>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  const token = nookies.get(context).REKUT_TOKEN
+  if(token === 'notFound'){
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
+  const { login } = jwt.decode(token)
+  return {
+    props: {
+      login
+    },
+  }
 }

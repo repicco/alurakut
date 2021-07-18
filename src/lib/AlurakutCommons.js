@@ -2,6 +2,11 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import NextLink from 'next/link';
 
+import { useRouter } from 'next/router'
+import nookies from 'nookies'
+
+import Alert from '../components/Alert'
+
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
 
@@ -21,6 +26,8 @@ function Link({ href, children, ...props }) {
 // ================================================================================================================
 export function AlurakutMenu({ githubUser }) {
   const [isMenuOpen, setMenuState] = React.useState(false);
+  const router = useRouter()
+  const [newAlert, setNewAlert] = React.useState({visible: false, message: '', type: ''})
   return (
     <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>
       <div className="container">
@@ -35,7 +42,14 @@ export function AlurakutMenu({ githubUser }) {
         </nav>
 
         <nav>
-          <a href={`/logout`}>
+          <a onClick={() => {
+            nookies.set(null, 'REKUT_TOKEN', 'notFound', {
+              path: '/',
+              maxAge: 86400
+            })
+            setNewAlert({visible: true, message: 'Saindo... Volte sempre!', type: 'success'})
+            setTimeout(() => router.push('/login'), 3000)
+          }}>
             Sair
           </a>
           <div>
@@ -49,6 +63,9 @@ export function AlurakutMenu({ githubUser }) {
         </button>
       </div>
       <AlurakutMenuProfileSidebar githubUser={githubUser} />
+      <Alert visible={newAlert.visible} setVisible={setNewAlert} type={newAlert.type}>
+          <p>{newAlert.message}</p>
+      </Alert>
     </AlurakutMenu.Wrapper>
   )
 }
@@ -185,6 +202,8 @@ function AlurakutMenuProfileSidebar({ githubUser }) {
 // AlurakutProfileSidebarMenuDefault
 // ================================================================================================================
 export function AlurakutProfileSidebarMenuDefault() {
+  const router = useRouter()
+  const [newAlert, setNewAlert] = React.useState({visible: false, message: '', type: ''})
   return (
     <AlurakutProfileSidebarMenuDefault.Wrapper>
       <nav>
@@ -210,12 +229,22 @@ export function AlurakutProfileSidebarMenuDefault() {
         <a href="/">
           <img src={`${BASE_URL}/icons/plus.svg`} />
             GitHub Trends
-          </a>
-        <a href="/logout">
+        </a>
+        <a onClick={() => {
+          nookies.set(null, 'REKUT_TOKEN', 'notFound', {
+            path: '/',
+            maxAge: 86400
+          })
+          setNewAlert({visible: true, message: 'Saindo... Volte sempre!', type: 'success'})
+          setTimeout(() => router.push('/login'), 3000)
+        }}>
           <img src={`${BASE_URL}//icons/logout.svg`} />
             Sair
-          </a>
+        </a>
       </nav>
+      <Alert visible={newAlert.visible} setVisible={setNewAlert} type={newAlert.type}>
+          <p>{newAlert.message}</p>
+      </Alert>
     </AlurakutProfileSidebarMenuDefault.Wrapper>
   )
 }
