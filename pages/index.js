@@ -139,8 +139,7 @@ export default function Home({ login }) {
 
 export async function getServerSideProps(context) {
   const token = await nookies.get(context).REKUT_TOKEN
-  let gitUser = ''
-  /* Change Version Vercel */
+  let user = ''
   if(token === 'notFound'){
     return {
       redirect: {
@@ -150,11 +149,11 @@ export async function getServerSideProps(context) {
     }
   } else {
     const decodeToken = await jwt.decode(token).login
-    gitUser = decodeToken
+    user = decodeToken
   }
   return {
     props: {
-      login: gitUser
+      login: user
     },
   }
 }
