@@ -75,7 +75,7 @@ export default function LoginScreen() {
                             }}
                         />
                         <button type="submit">
-                        Login
+                        Entrar
                         </button>
                     </form>
 
