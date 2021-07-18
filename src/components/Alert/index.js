@@ -16,7 +16,7 @@ export default function Alert({visible, setVisible, type, children}){
             setHandleModal(false)
             setVisible({visible: false, message: '', type: ''})
         }
-        handle === 'firstOpen' ? setTimeout(() => close(), 2500) : close()
+        handle === 'firstOpen' ? setTimeout(() => close(), 2000) : close()
     }, [setHandleModal, setVisible])
 
     useEffect(() => {

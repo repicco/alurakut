@@ -12,7 +12,7 @@ import Profile from '../src/components/Profile'
 
 export async function getServerSideProps(context) {
 /*   const token = await nookies.get(context).REKUT_TOKEN
-  let gitUser = null
+  
   if(token === 'notFound'){
     return {
       redirect: {
@@ -26,6 +26,8 @@ export async function getServerSideProps(context) {
   } */
 
   /* await jwt.decode(token).login */
+  let gitUser = ''
+  console.log(gitUser)
   return {
     props: {
       login: 'repicco'
