@@ -26,7 +26,7 @@ export async function getServerSideProps(context) {
   }
   return {
     props: {
-      login: gitUser
+      login: 'repicco'
     },
   }
 }
