@@ -9,8 +9,8 @@ import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
 import ProfileSideBar from '../src/components/ProfileSideBar'
 import Profile from '../src/components/Profile'
 
-export default function Home({login}) {
-  const githubUser = login
+export default function Home(props) {
+  const githubUser = props?.login
   const [communities, setCommunities] = useState([])
   const favoriteUsers = ['juunegreiros', 'omariosouto', 'rafaballerini', 'marcobrunodev', 'felipefialho', 'peas', 'guilhermesilveira']
   const [followers, setFollowers] = useState([])
@@ -143,7 +143,7 @@ export async function getServerSideProps(context) {
     const props = token === 'notFound' ? { login: ''} : { login: jwt.decode(token).login }
 
     const redirect = { destination: '/login', permanent: false }
-    
+
     return token === 'notFound' ? { redirect, props } : { props }
   }
   
