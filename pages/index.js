@@ -140,7 +140,7 @@ export default function Home({ login }) {
 export async function getServerSideProps(context) {
   const token = await nookies.get(context).REKUT_TOKEN
   let gitUser = ''
-
+  /* Change Version Vercel */
   if(token === 'notFound'){
     return {
       redirect: {
