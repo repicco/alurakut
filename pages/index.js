@@ -11,7 +11,7 @@ import Profile from '../src/components/Profile'
 
 
 export async function getServerSideProps(context) {
-  const token = await nookies.get(context).REKUT_TOKEN
+/*   const token = await nookies.get(context).REKUT_TOKEN
   let gitUser = null
   if(token === 'notFound'){
     return {
@@ -21,9 +21,11 @@ export async function getServerSideProps(context) {
       }
     }
   } else {
-    /* await jwt.decode(token).login */
+    
     gitUser = 'repicco'
-  }
+  } */
+
+  /* await jwt.decode(token).login */
   return {
     props: {
       login: 'repicco'
