@@ -142,7 +142,12 @@ export async function getServerSideProps(context) {
   let githubUser = ''
 
   if(token === 'notFound'){
-    githubUser = 'ccc'
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
   } else {
     githubUser = 'repicco'
   }
