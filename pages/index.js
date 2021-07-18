@@ -139,7 +139,7 @@ export default function Home({ login }) {
 
 export async function getServerSideProps(context) {
   const token = await nookies.get(context).REKUT_TOKEN
-  let githubUser = ''
+  let gitUser = ''
 
   if(token === 'notFound'){
     return {
@@ -149,22 +149,12 @@ export async function getServerSideProps(context) {
       }
     }
   } else {
-    githubUser = 'repicco'
+    const decodeToken = await jwt.decode(token).login
+    gitUser = decodeToken
   }
-/*   if(token === 'notFound'){
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      }
-    }
-  } else {
-    const decodeToken = await jwt.decode(token)
-    login = decodeToken.login
-   }*/
   return {
     props: {
-      login: githubUser
+      login: gitUser
     },
   }
 }
