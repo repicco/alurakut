@@ -14,9 +14,9 @@ export default function Alert({visible, setVisible, type, children}){
     const closeModal = useCallback((handle) => {
         const close = () => {
             setHandleModal(false)
-            setVisible({visible: false, message: ''})
+            setVisible({visible: false, message: '', type: ''})
         }
-        handle === 'firstOpen' ? setTimeout(() => close(), 3000) : close()
+        handle === 'firstOpen' ? setTimeout(() => close(), 2500) : close()
     }, [setHandleModal, setVisible])
 
     useEffect(() => {

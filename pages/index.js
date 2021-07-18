@@ -9,8 +9,30 @@ import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
 import ProfileSideBar from '../src/components/ProfileSideBar'
 import Profile from '../src/components/Profile'
 
-export default function Home({ login }) {
-  const githubUser = login
+
+export async function getServerSideProps(context) {
+  const token = await nookies.get(context).REKUT_TOKEN
+  let gitUser = ''
+  if(token === 'notFound'){
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  } else {
+    const decodeToken = await jwt.decode(token).login
+    gitUser = decodeToken
+  }
+  return {
+    props: {
+      login: gitUser
+    },
+  }
+}
+
+export default function Home({login}) {
+  const githubUser = login ? login : ''
   const [communities, setCommunities] = useState([])
   const favoriteUsers = ['juunegreiros', 'omariosouto', 'rafaballerini', 'marcobrunodev', 'felipefialho', 'peas', 'guilhermesilveira']
   const [followers, setFollowers] = useState([])
@@ -135,25 +157,4 @@ export default function Home({ login }) {
       </MainGrid>
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-  const token = await nookies.get(context).REKUT_TOKEN
-  let gitUser = ''
-  if(token === 'notFound'){
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      }
-    }
-  } else {
-    const decodeToken = await jwt.decode(token).login
-    gitUser = decodeToken
-  }
-  return {
-    props: {
-      login: gitUser
-    },
-  }
 }
