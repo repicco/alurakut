@@ -139,6 +139,7 @@ export default function Home({ login }) {
 
 export async function getServerSideProps(context) {
   const token = nookies.get(context).REKUT_TOKEN
+  let login = ''
   if(token === 'notFound'){
     return {
       redirect: {
@@ -146,8 +147,9 @@ export async function getServerSideProps(context) {
         permanent: false,
       }
     }
+  } else {
+    login = await jwt.decode(token).login
   }
-  const { login } = jwt.decode(token)
   return {
     props: {
       login
