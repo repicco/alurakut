@@ -138,8 +138,14 @@ export default function Home({ login }) {
 }
 
 export async function getServerSideProps(context) {
-  /* const token = nookies.get(context).REKUT_TOKEN */
-  let githubUser = 'repicco'
+  const token = await nookies.get(context).REKUT_TOKEN
+  let githubUser = ''
+
+  if(token === 'notFound'){
+    githubUser = 'ccc'
+  } else {
+    githubUser = 'repicco'
+  }
 /*   if(token === 'notFound'){
     return {
       redirect: {
