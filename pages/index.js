@@ -12,15 +12,16 @@ import Profile from '../src/components/Profile'
 export async function getServerSideProps(context) {
   const token = nookies.get(context).REKUT_TOKEN
 
-  const props = token === 'notFound' ? { login: ''} : { login: jwt.decode(token).login }
+  if(token === 'notFound' || token === undefined) {
+    return { redirect : { destination: '/login', permanent: false } }
+  } 
 
-  const redirect = { destination: '/login', permanent: false }
-
-  return token === 'notFound' ? { redirect, props } : { props }
+  const jwtLogin = jwt.decode(token)?.login
+  return { props: { login: jwtLogin } }
 }
 
-export default function Home(props) {
-  const githubUser = props?.login
+export default function Home({login}) {
+  const githubUser = login
   const [communities, setCommunities] = useState([])
   const favoriteUsers = ['juunegreiros', 'omariosouto', 'rafaballerini', 'marcobrunodev', 'felipefialho', 'peas', 'guilhermesilveira']
   const [followers, setFollowers] = useState([])
