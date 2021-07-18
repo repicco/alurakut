@@ -9,34 +9,8 @@ import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
 import ProfileSideBar from '../src/components/ProfileSideBar'
 import Profile from '../src/components/Profile'
 
-
-export async function getServerSideProps(context) {
-/*   const token = await nookies.get(context).REKUT_TOKEN
-  
-  if(token === 'notFound'){
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      }
-    }
-  } else {
-    
-    gitUser = 'repicco'
-  } */
-
-  /* await jwt.decode(token).login */
-  let gitUser = ''
-  console.log(gitUser)
-  return {
-    props: {
-      login: 'repicco'
-    },
-  }
-}
-
 export default function Home({login}) {
-  const githubUser = login ? login : ''
+  const githubUser = login
   const [communities, setCommunities] = useState([])
   const favoriteUsers = ['juunegreiros', 'omariosouto', 'rafaballerini', 'marcobrunodev', 'felipefialho', 'peas', 'guilhermesilveira']
   const [followers, setFollowers] = useState([])
@@ -162,3 +136,14 @@ export default function Home({login}) {
     </>
   )
 }
+
+export async function getServerSideProps(context) {
+    const token = nookies.get(context).REKUT_TOKEN
+
+    const props = token === 'notFound' ? { login: ''} : { login: jwt.decode(token).login }
+
+    const redirect = { destination: '/login', permanent: false }
+    
+    return token === 'notFound' ? { redirect, props } : { props }
+  }
+  
