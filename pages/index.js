@@ -105,7 +105,6 @@ export default function Home({login}) {
                 url: dataForm.get('url'),
                 creatorslug: githubUser,
               }
-
               connectApi.datoPushCommunityPost(payload)
             }}>
               <div>

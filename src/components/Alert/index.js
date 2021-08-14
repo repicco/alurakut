@@ -47,8 +47,6 @@ export default function Alert({visible, setVisible, type, children}){
 
 }
 
-
-
 const StyleAlert = styled.div`
     position: fixed;
     right: 0;
